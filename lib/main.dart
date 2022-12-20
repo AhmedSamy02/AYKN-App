@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:login_app/src/add_affair.dart';
 import 'package:login_app/src/get_started.dart';
 import 'package:login_app/src/splash_screen.dart';
 
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: splash_screen(),
+      home: add_affair(),
     );
   }
 }

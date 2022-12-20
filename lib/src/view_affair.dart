@@ -38,21 +38,21 @@ class _view_affairState extends State<view_affair> {
     Pair(9, 'CMP9876')
   ];
   static var absenceList = [
-    [1, 'Ahmed Samy', 3],
-    [2, 'Omar Mohamed', 2],
-    [3, 'Karim Ibrahim', 1],
-    [4, 'Aya Ali', 5],
-    [5, 'Mahmoud Karim', 3],
-    [6, 'Amr Wael', 1],
-    [7, 'Zaki Ali', 3],
-    [8, 'Tamer Omar', 2],
-    [9, 'Ayman Mohamed', 1],
-    [10, 'Hossam Hassan', 1],
-    [11, 'Zaki Amr', 3],
-    [12, 'Tamer Sakr', 2],
-    [13, 'Ayman Omar', 1],
-    [14, 'Amr Karem', 1],
-    [15, 'Sayed Ahmed', 3],
+    [1, 'Ahmed Samy', 3,'Algorthims'],
+    [2, 'Omar Mohamed', 2,'Probability'],
+    [3, 'Karim Ibrahim', 1,'Data Structure'],
+    [4, 'Aya Ali', 5,'PT'],
+    [5, 'Mahmoud Karim', 3,'Circuits I'],
+    [6, 'Amr Wael', 1,'Circuits II'],
+    [7, 'Zaki Ali', 3,'Electronics I'],
+    [8, 'Tamer Omar', 2,'Electronics I'],
+    [9, 'Ayman Mohamed', 1,'Electronics I'],
+    [10, 'Hossam Hassan', 1,'Electronics I'],
+    [11, 'Zaki Amr', 3,'Logic Design I'],
+    [12, 'Tamer Sakr', 2,'Logic Design I'],
+    [13, 'Ayman Omar', 1,'Logic Design I'],
+    [14, 'Amr Karem', 1,'Logic Design I'],
+    [15, 'Sayed Ahmed', 3,'Logic Design I'],
   ];
   static final List<Widget> _widgetOptions = <Widget>[
     Container(
@@ -103,14 +103,38 @@ class _view_affairState extends State<view_affair> {
                             'Name:- ',
                             style: TextStyle(
                                 color: Colors.black87,
-                                fontSize: 20,
+                                fontSize: 18,
                                 fontWeight: FontWeight.w700),
                           ),
                           Text(
                             '${absenceList[position][1]}',
                             style: const TextStyle(
                                 color: Colors.black45,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 15),
+                      child: Row(
+                        children: [
+                          const Text(
+                            'Name:- ',
+                            style: TextStyle(
+                                color: Colors.black87,
                                 fontSize: 18,
+                                fontWeight: FontWeight.w700),
+                          ),
+                          Text(
+                            '${absenceList[position][3]}',
+                            style: const TextStyle(
+                                color: Colors.black45,
+                                fontSize: 15,
                                 fontWeight: FontWeight.w400),
                           ),
                         ],

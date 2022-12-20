@@ -16,7 +16,7 @@ getPref() async {
   affairEmail=preferences.getString('Email')!;
   affairName='Affair Name';
 }
-var titles = {'Courses', 'Students', 'Announcements'};
+var titles = {'Courses', 'Students','Instructors', 'Announcements'};
 TextEditingController courseId = new TextEditingController();
 TextEditingController courseName = new TextEditingController();
 TextEditingController coursePrerequisite = new TextEditingController();
@@ -26,6 +26,11 @@ TextEditingController studentName = new TextEditingController();
 TextEditingController studentUsername = new TextEditingController();
 TextEditingController studentEmail = new TextEditingController();
 TextEditingController studentPassword = new TextEditingController();
+TextEditingController instructorId = new TextEditingController();
+TextEditingController instructorName = new TextEditingController();
+TextEditingController instructorUsername = new TextEditingController();
+TextEditingController instructorEmail = new TextEditingController();
+TextEditingController instructorPassword = new TextEditingController();
 String affairName='';
 String affairEmail='';
 
@@ -33,7 +38,8 @@ class _add_affairState extends State<add_affair> {
   //ID - Name - Prerequisite - Price
   static var courses = [[]]; //ID - Name - Prerequisite - Price
   static var students = [[]]; //ID - Name - UserName - Email - Password
-  static var annoucmnets = [[]]; //ID - Name - UserName - Email - Password
+  static var instructors = [[]]; //ID - Name - UserName - Email - Password
+  static var annoucmnets = [[]];//ID - Name - UserName - Email - Password
 
   static BuildContext currContext = BuildContext as BuildContext;
 
@@ -45,7 +51,7 @@ class _add_affairState extends State<add_affair> {
       ['CMP2020', 'Algorithms', 'Data Structure', 500],
       ['CMP2010', 'Data Structure', 'Programming Techniques', 500],
       ['CMP2000', 'Programming Techniques', null, 200],
-      ['CMP1516', 'Databases Fundamentals', null, 1000],
+      ['CMP1516', 'Databases Fundamental', null, 1000],
       ['GEN2010', 'Project Management', null, 100],
       ['GEN2112', 'Critical Thinking', null, 300],
       ['ELC2120', 'Circuits I', null, 1500],
@@ -65,6 +71,18 @@ class _add_affairState extends State<add_affair> {
       [8, 'Ahmed Samy', 'AS', 'nname@gmail.com', 'msfaASFAsmf64'],
       [9, 'Ahmed Samy', 'AS', 'nname@gmail.com', 'msfaASFAsmf64'],
       [10, 'Ahmed Samy', 'AS', 'nname@gmail.com', 'msfaASFAsmf64'],
+    ];
+    instructors = [
+      [1, 'Omar Samy', 'AS', 'nname1585@gmail.com', 'fkansf519',5600],
+      [2, 'Omar Samy', 'AS', 'nname1585@gmail.com', 'fkansf519',3500],
+      [3, 'Ahmed Samy', 'AS', 'nname1585@gmail.com', 'fkansf519',8600],
+      [4, 'Ahmed Samy', 'AS', 'nname1585@gmail.com', 'fkansf519',6500],
+      [5, 'Ahmed Samy', 'AS', 'nname1585@gmail.com', 'fkansf519',1500],
+      [6, 'Ahmed Samy', 'AS', 'nname1585@gmail.com', 'fkansf519',7000],
+      [7, 'Ahmed Samy', 'AS', 'nname1585@gmail.com', 'fkansf519',12000],
+      [8, 'Ahmed Samy', 'AS', 'nname1585@gmail.com', 'fkansf519',10500],
+      [9, 'Ahmed Samy', 'AS', 'nname1585@gmail.com', 'fkansf519',3500],
+      [10, 'Ahmed Samy', 'AS', 'nname1585@gmail.com', 'fkansf519',1200],
     ];
     annoucmnets = [
       [
@@ -264,7 +282,7 @@ class _add_affairState extends State<add_affair> {
                   child: Row(
                     children: [
                       Container(
-                        width: 300,
+                        width: 270,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -277,14 +295,14 @@ class _add_affairState extends State<add_affair> {
                                     'ID:- ',
                                     style: TextStyle(
                                         color: Colors.black87,
-                                        fontSize: 20,
+                                        fontSize: 17,
                                         fontWeight: FontWeight.w700),
                                   ),
                                   Text(
                                     '${courses[position][0]}',
                                     style: TextStyle(
                                         color: Colors.grey[700],
-                                        fontSize: 18,
+                                        fontSize: 15,
                                         fontWeight: FontWeight.w300),
                                   ),
                                 ],
@@ -300,7 +318,7 @@ class _add_affairState extends State<add_affair> {
                                       'Name:- ',
                                       style: TextStyle(
                                           color: Colors.black87,
-                                          fontSize: 20,
+                                          fontSize: 17,
                                           fontWeight: FontWeight.w700),
                                     ),
                                   ),
@@ -311,7 +329,7 @@ class _add_affairState extends State<add_affair> {
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                           color: Colors.grey[700],
-                                          fontSize: 18,
+                                          fontSize: 15,
                                           fontWeight: FontWeight.w300),
                                     ),
                                   ),
@@ -326,7 +344,7 @@ class _add_affairState extends State<add_affair> {
                                     'Prerequisite:- ',
                                     style: TextStyle(
                                         color: Colors.black87,
-                                        fontSize: 20,
+                                        fontSize: 17,
                                         fontWeight: FontWeight.w700),
                                   ),
                                   Flexible(
@@ -337,7 +355,7 @@ class _add_affairState extends State<add_affair> {
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                           color: Colors.grey[700],
-                                          fontSize: 18,
+                                          fontSize: 15,
                                           overflow: TextOverflow.ellipsis,
                                           fontWeight: FontWeight.w300),
                                     ),
@@ -353,14 +371,14 @@ class _add_affairState extends State<add_affair> {
                                     'Price:- ',
                                     style: TextStyle(
                                         color: Colors.black87,
-                                        fontSize: 20,
+                                        fontSize: 17,
                                         fontWeight: FontWeight.w700),
                                   ),
                                   Text(
                                     '${courses[position][3]} EGP',
                                     style: TextStyle(
                                         color: Colors.grey[700],
-                                        fontSize: 18,
+                                        fontSize: 15,
                                         fontWeight: FontWeight.w300),
                                   ),
                                 ],
@@ -372,9 +390,7 @@ class _add_affairState extends State<add_affair> {
                           ],
                         ),
                       ),
-                      Spacer(),
-                      Container(
-                        width: 80,
+                      Expanded(
                         child: MaterialButton(
                           onPressed: () {},
                           color: Colors.red[900],
@@ -577,7 +593,7 @@ class _add_affairState extends State<add_affair> {
                   child: Row(
                     children: [
                       Container(
-                        width: 300,
+                        width: 250,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -590,14 +606,14 @@ class _add_affairState extends State<add_affair> {
                                     'ID:- ',
                                     style: TextStyle(
                                         color: Colors.black87,
-                                        fontSize: 20,
+                                        fontSize: 17,
                                         fontWeight: FontWeight.w700),
                                   ),
                                   Text(
                                     '${students[position][0]}',
                                     style: TextStyle(
                                         color: Colors.grey[700],
-                                        fontSize: 18,
+                                        fontSize: 15,
                                         fontWeight: FontWeight.w300),
                                   ),
                                 ],
@@ -613,7 +629,7 @@ class _add_affairState extends State<add_affair> {
                                       'Name:- ',
                                       style: TextStyle(
                                           color: Colors.black87,
-                                          fontSize: 20,
+                                          fontSize: 17,
                                           fontWeight: FontWeight.w700),
                                     ),
                                   ),
@@ -624,7 +640,7 @@ class _add_affairState extends State<add_affair> {
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                           color: Colors.grey[700],
-                                          fontSize: 18,
+                                          fontSize: 15,
                                           fontWeight: FontWeight.w300),
                                     ),
                                   ),
@@ -639,7 +655,7 @@ class _add_affairState extends State<add_affair> {
                                     'Username:- ',
                                     style: TextStyle(
                                         color: Colors.black87,
-                                        fontSize: 20,
+                                        fontSize: 17,
                                         fontWeight: FontWeight.w700),
                                   ),
                                   Flexible(
@@ -650,7 +666,7 @@ class _add_affairState extends State<add_affair> {
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                           color: Colors.grey[700],
-                                          fontSize: 18,
+                                          fontSize: 15,
                                           overflow: TextOverflow.ellipsis,
                                           fontWeight: FontWeight.w300),
                                     ),
@@ -666,14 +682,14 @@ class _add_affairState extends State<add_affair> {
                                     'Email:- ',
                                     style: TextStyle(
                                         color: Colors.black87,
-                                        fontSize: 20,
+                                        fontSize: 17,
                                         fontWeight: FontWeight.w700),
                                   ),
                                   Text(
                                     '${students[position][3]}',
                                     style: TextStyle(
                                         color: Colors.grey[700],
-                                        fontSize: 18,
+                                        fontSize: 15,
                                         fontWeight: FontWeight.w300),
                                   ),
                                 ],
@@ -687,14 +703,14 @@ class _add_affairState extends State<add_affair> {
                                     'Password:- ',
                                     style: TextStyle(
                                         color: Colors.black87,
-                                        fontSize: 20,
+                                        fontSize: 17,
                                         fontWeight: FontWeight.w700),
                                   ),
                                   Text(
                                     '${students[position][4]}',
                                     style: TextStyle(
                                         color: Colors.grey[700],
-                                        fontSize: 18,
+                                        fontSize: 15,
                                         fontWeight: FontWeight.w300),
                                   ),
                                 ],
@@ -715,6 +731,365 @@ class _add_affairState extends State<add_affair> {
                           height: 170,
                           elevation: 15,
                           child: Text(
+                            'Remove',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+            itemCount: students.length,
+          ),
+        ),
+      ],
+    ),
+    Column(
+      children: [
+        const SizedBox(
+          height: 15,
+        ),
+        Container(
+          width: 200,
+          child: MaterialButton(
+            color: Colors.blueAccent,
+            shape: StadiumBorder(),
+            elevation: 15,
+            onPressed: () => showDialog(
+                context: currContext,
+                builder: (BuildContext context) => AlertDialog(
+                    title: const Text(
+                      'Add Instructor',
+                      style: TextStyle(
+                          fontSize: 25, fontWeight: FontWeight.w500),
+                    ),
+                    actions: [
+                      Container(
+                        decoration: BoxDecoration(shape: BoxShape.circle),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TextFormField(
+                              controller: instructorId,
+                              decoration: InputDecoration(
+                                icon: Icon(Icons.perm_identity),
+                                hintText: 'ID',
+                                labelText: 'ID',
+                                border: OutlineInputBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(15)),
+                              ),
+                              cursorColor: Colors.blue,
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            TextFormField(
+                              controller: instructorName,
+                              decoration: InputDecoration(
+                                icon: Icon(Icons.person_outline_rounded),
+                                hintText: 'Name',
+                                labelText: 'Name',
+                                border: OutlineInputBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(15)),
+                              ),
+                              cursorColor: Colors.blue,
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            TextFormField(
+                              controller: instructorUsername,
+                              decoration: InputDecoration(
+                                icon: Icon(CupertinoIcons.profile_circled),
+                                hintText: 'Username',
+                                labelText: 'Username',
+                                border: OutlineInputBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(15)),
+                              ),
+                              cursorColor: Colors.blue,
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            TextFormField(
+                              controller: instructorEmail,
+                              decoration: InputDecoration(
+                                icon: Icon(Icons.email_outlined),
+                                hintText: 'Email',
+                                labelText: 'Email',
+                                border: OutlineInputBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(15)),
+                              ),
+                              cursorColor: Colors.blue,
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            TextFormField(
+                              controller: instructorPassword,
+                              decoration: InputDecoration(
+                                icon: Icon(Icons.enhanced_encryption),
+                                hintText: 'Password',
+                                labelText: 'Password',
+                                border: OutlineInputBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(15)),
+                              ),
+                              cursorColor: Colors.blue,
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                              width: 120,
+                              child: OutlinedButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text('Cancel'),
+                                style: OutlinedButton.styleFrom(
+                                  shape: StadiumBorder(),
+                                ),
+                              )),
+                          Spacer(),
+                          Container(
+                            width: 120,
+                            child: MaterialButton(
+                              onPressed: () {
+                                if (studentId.text == '' ||
+                                    studentName.text == '' ||
+                                    studentUsername.text == '' ||
+                                    studentEmail.text == '' ||
+                                    studentPassword.text == '') {
+                                  Fluttertoast.showToast(
+                                      msg: "Can't add this instructor",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.blue,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0);
+                                  return;
+                                }
+                                if (studentPassword.text.length < 8 ||
+                                    studentPassword.text.length > 30) {
+                                  Fluttertoast.showToast(
+                                      msg:
+                                      "The Password must be between 8-30",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.blue,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0);
+                                  return;
+                                }
+                                Navigator.pop(context);
+                              },
+                              color: Colors.blueAccent,
+                              shape: StadiumBorder(),
+                              child: const Text(
+                                'Add',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ])),
+            height: 40,
+            child: Text(
+              'Add',
+              style: TextStyle(color: Colors.white, fontSize: 25),
+            ),
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemBuilder: (context, position) {
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Card(
+                  color: Colors.white70,
+                  elevation: 15,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 250,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: 15, top: 15),
+                              child: Row(
+                                children: [
+                                  const Text(
+                                    'ID:- ',
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                  Text(
+                                    '${instructors[position][0]}',
+                                    style: TextStyle(
+                                        color: Colors.grey[700],
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w300),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15, top: 10),
+                              child: Row(
+                                children: [
+                                  const Flexible(
+                                    fit: FlexFit.loose,
+                                    child: Text(
+                                      'Name:- ',
+                                      style: TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                  ),
+                                  Flexible(
+                                    fit: FlexFit.loose,
+                                    child: Text(
+                                      '${instructors[position][1]}',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color: Colors.grey[700],
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15, top: 10),
+                              child: Row(
+                                children: [
+                                  const Text(
+                                    'Username:- ',
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                  Flexible(
+                                    fit: FlexFit.loose,
+                                    child: Text(
+                                      '${instructors[position][2] ?? '--'}',
+                                      softWrap: false,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color: Colors.grey[700],
+                                          fontSize: 15,
+                                          overflow: TextOverflow.ellipsis,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15, top: 10),
+                              child: Row(
+                                children: [
+                                  const Text(
+                                    'Email:- ',
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                  Flexible(
+                                    fit: FlexFit.loose,
+                                    child: Text(
+                                      '${instructors[position][3]}',
+                                      style: TextStyle(
+                                        overflow: TextOverflow.ellipsis,
+                                          color: Colors.grey[700],
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 15, top: 10),
+                              child: Row(
+                                children: [
+                                  const Text(
+                                    'Password:- ',
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                  Text(
+                                    '${instructors[position][4]}',
+                                    style: TextStyle(
+                                        color: Colors.grey[700],
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w300),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 15, top: 10),
+                              child: Row(
+                                children: [
+                                  const Text(
+                                    'Salary:- ',
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                  Text(
+                                    '${instructors[position][5]}',
+                                    style: TextStyle(
+                                        color: Colors.grey[700],
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w300),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            )
+                          ],
+                        ),
+                      ),
+                      const Spacer(),
+                      SizedBox(
+                        width: 80,
+                        child: MaterialButton(
+                          onPressed: () {},
+                          color: Colors.red[900],
+                          height: 170,
+                          elevation: 15,
+                          child: const Text(
                             'Remove',
                             style: TextStyle(color: Colors.white),
                           ),
@@ -806,9 +1181,10 @@ class _add_affairState extends State<add_affair> {
   Widget build(BuildContext context) {
     currContext = context;
     return Scaffold(
-      appBar: AppBar(title: Text('${titles.elementAt(_selectedIndex)}')),
+      appBar: AppBar(title: Text(titles.elementAt(_selectedIndex))),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        backgroundColor: Colors.white54,
+        items:const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.add_circle_outline_rounded),
             label: 'Course',
@@ -818,12 +1194,18 @@ class _add_affairState extends State<add_affair> {
             label: 'Student',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: 'Instructor',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.post_add_outlined),
             label: 'Announcement',
+
           ),
         ],
-        backgroundColor: Colors.white54,
+        selectedItemColor: Colors.blue,
         elevation: 8,
+        unselectedItemColor: Colors.grey,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),
@@ -841,45 +1223,45 @@ class _add_affairState extends State<add_affair> {
             padding: EdgeInsets.zero,
             children: [
               DrawerHeader(
+                duration: Duration(seconds: 20),
+                decoration: const BoxDecoration(
+                  color: Colors.blue,
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       '${affairName}',
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w500,
                           fontSize: 25),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 8,
                     ),
                     Text(
                       '${affairEmail}',
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w500,
                           fontSize: 15),
                     )
                   ],
                 ),
-                duration: Duration(seconds: 20),
-                decoration: const BoxDecoration(
-                  color: Colors.blue,
-                ),
               ),
               ListTile(
-                leading: Icon(Icons.add),
+                leading: const Icon(Icons.add),
                 selected: true,
-                title: Text('Add'),
+                title: const Text('Add'),
                 onTap: () {
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                leading: Icon(Icons.view_week_outlined),
-                title: Text('View'),
+                leading: const Icon(Icons.view_week_outlined),
+                title: const Text('View'),
                 onTap: () {
                   Navigator.push(
                     context,
