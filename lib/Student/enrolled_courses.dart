@@ -4,18 +4,22 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yarab/Student/CourseLectures.dart';
 import 'package:yarab/Student/feedback_screen.dart';
+import 'package:yarab/components/crud.dart';
 import 'package:yarab/src/get_started.dart';
 
+import '../constant/linkapi.dart';
 import 'annoucement.dart';
 import 'courses.dart';
 
 //this class for the student home navigation
 class Nbar extends StatefulWidget {
-  Nbar({required this.Name});
+  Nbar({required this.Name, required this.Email, required this.Id});
 
-  String Name = 'f';
+  String Name = '';
+  String Email = '';
+  String Id = '';
   @override
-  State<Nbar> createState() => _NbarState(Name: Name);
+  State<Nbar> createState() => _NbarState(Name: Name, Email: Email, Id: Id);
 }
 
 setPref() async {
@@ -24,15 +28,13 @@ setPref() async {
   preferences.setBool('b0', false);
 }
 
-class _NbarState extends State<Nbar> {
-  _NbarState({required this.Name}) {
+class _NbarState extends State<Nbar> with Crud {
+  _NbarState({required this.Name, required this.Email, required this.Id}) {
     screens = [
-      Enrolled(
-        Name: Name,
-      ),
+      Enrolled(Name: Name, Id: Id),
       Announcement(),
-      Courses(),
-      feedback_screen()
+      Courses(Id: Id),
+      feedback_screen(Id)
     ];
   }
   var screens = [];
@@ -45,6 +47,14 @@ class _NbarState extends State<Nbar> {
   ];
 
   String Name = '';
+  String Email = '';
+  String Id = '';
+
+  viewpay() async {
+    var response = postRequest(linkviewpay, {"std_id": Id});
+    return response;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -52,7 +62,10 @@ class _NbarState extends State<Nbar> {
       child: SafeArea(
         top: false,
         child: ClipRect(
-          child: Scaffold(
+          child:FutureBuilder(
+            future: viewpay() ,
+            builder:(BuildContext context, AsyncSnapshot snapshot) {
+          return  Scaffold(
             appBar: AppBar(
               leading: Icon(Icons.account_circle_rounded),
               backgroundColor: const Color.fromARGB(255, 38, 71, 156),
@@ -66,10 +79,10 @@ class _NbarState extends State<Nbar> {
                 ),
               ),
               actions: [
-                IconButton(
-                  onPressed: () {
+                IconButton( 
+                  onPressed: ()  {
                     Fluttertoast.showToast(
-                      msg: "you paid the fees",
+                      msg: "${snapshot.data['data']}",
                       gravity: ToastGravity.BOTTOM,
                       fontSize: 20,
                       textColor: Colors.white,
@@ -112,7 +125,7 @@ class _NbarState extends State<Nbar> {
                 }),
               ),
             ),
-          ),
+          );})
         ),
       ),
     );
@@ -120,83 +133,106 @@ class _NbarState extends State<Nbar> {
 }
 
 class Enrolled extends StatefulWidget {
-  Enrolled({required this.Name});
+  Enrolled({required this.Name, required this.Id});
   String Name = '';
+  String Id = '';
   @override
-  State<Enrolled> createState() => _EnrolledState(Name: Name);
+  State<Enrolled> createState() => _EnrolledState(Name: Name, Id: Id);
 }
 
-class _EnrolledState extends State<Enrolled> {
+class _EnrolledState extends State<Enrolled> with Crud {
   String Name = '';
-  _EnrolledState({required this.Name});
+  String Id = '';
+  _EnrolledState({required this.Name, required this.Id});
+
+  viewStdCourse() async {
+    var response = postRequest(linkviewEcourse, {"stud_id": Id});
+    return response;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: ListView.builder(
-          itemCount: 20,
-          itemBuilder: (Context, index) {
-            return Container(
-              height: 100,
-              child: Card(
-                elevation: 12,
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(25)),
-                    side: BorderSide(width: 5, color: Colors.white)),
-                color: Colors.lightBlue[50],
-                shadowColor: Colors.black26,
-                child: ListTile(
-                  onTap: () {
-                    Lectandexam test = Lectandexam(
-                      Coursename: "named ann",
-                      Name: Name,
-                    );
-                    test.setname();
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Lectandexam(
-                            Coursename: "named",
-                            Name: Name,
-                          ),
-                        ));
-                  },
-                  title: Text(
-                    "the course name",
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontFamily: 'Changa',
-                    ),
-                  ),
-                  subtitle: Text(
-                    "the main topic",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontFamily: 'Bitter',
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  trailing: Column(
-                    children: [
-                      Text("Attendane",
-                          style: TextStyle(
-                            fontFamily: 'Changa',
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          )),
-                      Text(
-                        "9",
+      body: FutureBuilder(
+          future: viewStdCourse(),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            return ListView.builder(
+              itemCount: snapshot.hasData ? snapshot.data['data'].length : 0,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (Context, index) {
+                return Container(
+                  height: 100,
+                  child: Card(
+                    elevation: 12,
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(25)),
+                        side: BorderSide(width: 5, color: Colors.white)),
+                    color: Colors.lightBlue[50],
+                    shadowColor: Colors.black26,
+                    child: ListTile(
+                      onTap: () {
+                        Lectandexam test = Lectandexam(
+                          courseName:
+                              "${snapshot.data['data'][index]['course_name']}",
+                          courseId:
+                              "${snapshot.data['data'][index]['course_id']}",
+                          studId: Id,
+                        );
+                        test.setname();
+                        test.setid();
+                        test.setStudId();
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Lectandexam(
+                                courseName:
+                                    "${snapshot.data['data'][index]['course_name']}",
+                                courseId:
+                                    "${snapshot.data['data'][index]['course_id']}",
+                                studId: Id,
+                              ),
+                            ));
+                      },
+                      title: Text(
+                        "${snapshot.data['data'][index]['course_name']}",
                         style: TextStyle(
-                          fontFamily: 'bitter',
-                          fontWeight: FontWeight.bold,
                           fontSize: 25,
+                          fontFamily: 'Changa',
                         ),
-                      )
-                    ],
+                      ),
+                      subtitle: Text(
+                        "${snapshot.data['data'][index]['course_code']}",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontFamily: 'Bitter',
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      trailing: Column(
+                        children: [
+                          Text("Absence",
+                              style: TextStyle(
+                                fontFamily: 'Changa',
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              )),
+                          Text(
+                            "${snapshot.data['data'][index]['enroll_attendanceNo']}",
+                            style: TextStyle(
+                              fontFamily: 'bitter',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 25,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             );
           }),
     );

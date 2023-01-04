@@ -26,10 +26,13 @@ class _splash_screenState extends State<splash_screen> {
     b0 = preferences.getBool('b0')!;
     Email = preferences.getString('Email')!;
     Name = preferences.getString('Name')!;
+    Id = preferences.getString('Id')!;
   }
 
   String Email = '';
   String Name = '';
+  String Id = '';
+
   @override
   void initState() {
     getPref();
@@ -92,7 +95,6 @@ class _splash_screenState extends State<splash_screen> {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => get_started()));
     }
-
     if (b1 && b0) {
       Navigator.pushReplacement(
           context,
@@ -107,17 +109,17 @@ class _splash_screenState extends State<splash_screen> {
           context,
           MaterialPageRoute(
               builder: (context) => Nbar(
+                    Email: Email,
                     Name: Name,
+                    Id: Id.toString(),
                   )));
     }
     if (!b1 && b0) {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => InstructorCourses(
-                    Email: Email,
-                    Name: Name,
-                  )));
+              builder: (context) =>
+                  InstructorCourses(Email: Email, Name: Name, Id: Id)));
     }
   }
 }

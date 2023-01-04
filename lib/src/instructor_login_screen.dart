@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:yarab/constant/linkapi.dart';
 import 'package:yarab/instructor/instructor_home.dart';
+import 'package:yarab/components/crud.dart';
 
 class instructor_login_screen extends StatefulWidget {
   @override
@@ -10,23 +12,84 @@ class instructor_login_screen extends StatefulWidget {
       _instructor_login_screenState();
 }
 
-class _instructor_login_screenState extends State<instructor_login_screen> {
+class _instructor_login_screenState extends State<instructor_login_screen>
+    with Crud {
   var instructor_email = new TextEditingController();
 
   var instructor_password = new TextEditingController();
   bool _isObscure = true;
-
   @override
   void initState() {
     _isObscure = true;
   }
 
-  setPref(String email, String Name) async {
+  login() async {
+    if (instructor_email.text.isEmpty) {
+      Fluttertoast.showToast(
+          msg: "please enter an email address",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.blue,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return;
+    }
+
+    if (instructor_password.text.length < 8 ||
+        instructor_password.text.length > 30) {
+      Fluttertoast.showToast(
+          msg: "please enter a password of range 8-30",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.blue,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return;
+    }
+
+    var response = await postRequest(linklogininst, {
+      "inst_email": instructor_email.text,
+      "inst_password": instructor_password.text
+    });
+
+    if (response['status'] == "success") {
+      setPref(
+          instructor_email.text,
+          response['data']['inst_fisrtName'] +
+              " " +
+              response['data']['inst_secName'],
+          response['data']['inst_id']);
+      Navigator.pop(context);
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => InstructorCourses(
+                  Email: instructor_email.text,
+                  Name: response['data']['inst_fisrtName'] +
+                      " " +
+                      response['data']['inst_secName'],
+                  Id: response['data']['inst_id'])));
+    } else {
+      Fluttertoast.showToast(
+          msg: "Email or Password are incorrect",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.blue,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
+  }
+
+  setPref(String email, String Name, String Id) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setBool('b1', false);
     preferences.setBool('b0', true);
     preferences.setString('Email', email);
     preferences.setString('Name', Name);
+    preferences.setString('Id', Id);
   }
 
   @override
@@ -158,55 +221,56 @@ class _instructor_login_screenState extends State<instructor_login_screen> {
                   ),
                   Expanded(
                     child: MaterialButton(
-                      onPressed: () {
-                        if (instructor_email.text.isEmpty) {
-                          Fluttertoast.showToast(
-                              msg: "please enter an email address",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.BOTTOM,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.blue,
-                              textColor: Colors.white,
-                              fontSize: 16.0);
-                          return;
-                        }
+                      onPressed: () async {
+                        await login();
+                        // if (instructor_email.text.isEmpty) {
+                        //   Fluttertoast.showToast(
+                        //       msg: "please enter an email address",
+                        //       toastLength: Toast.LENGTH_SHORT,
+                        //       gravity: ToastGravity.BOTTOM,
+                        //       timeInSecForIosWeb: 1,
+                        //       backgroundColor: Colors.blue,
+                        //       textColor: Colors.white,
+                        //       fontSize: 16.0);
+                        //   return;
+                        // }
 
-                        if (instructor_password.text.length < 8 ||
-                            instructor_password.text.length > 30) {
-                          Fluttertoast.showToast(
-                              msg: "please enter a password of range 8-30",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.BOTTOM,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.blue,
-                              textColor: Colors.white,
-                              fontSize: 16.0);
-                          return;
-                        }
+                        // if (instructor_password.text.length < 8 ||
+                        //     instructor_password.text.length > 30) {
+                        //   Fluttertoast.showToast(
+                        //       msg: "please enter a password of range 8-30",
+                        //       toastLength: Toast.LENGTH_SHORT,
+                        //       gravity: ToastGravity.BOTTOM,
+                        //       timeInSecForIosWeb: 1,
+                        //       backgroundColor: Colors.blue,
+                        //       textColor: Colors.white,
+                        //       fontSize: 16.0);
+                        //   return;
+                        // }
 
-                        if ((instructor_email.text == 'ahmedsamy@mail.com' &&
-                                instructor_password.text == 'ahmed samy') ||
-                            (instructor_email.text == 'nancyayman@mail.com' &&
-                                instructor_password.text == 'nancy ayman')) {
-                          setPref(instructor_email.text, 'The name');
-                          Navigator.pop(context);
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => InstructorCourses(
-                                        Email: instructor_email.text,
-                                        Name: 'The name',
-                                      )));
-                        } else {
-                          Fluttertoast.showToast(
-                              msg: "Email or Password are incorrect",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.BOTTOM,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.blue,
-                              textColor: Colors.white,
-                              fontSize: 16.0);
-                        }
+                        // if ((instructor_email.text == 'ahmedsamy@mail.com' &&
+                        //         instructor_password.text == 'ahmed samy') ||
+                        //     (instructor_email.text == 'nancyayman@mail.com' &&
+                        //         instructor_password.text == 'nancy ayman')) {
+                        //   setPref(instructor_email.text, 'The name');
+                        //   Navigator.pop(context);
+                        //   Navigator.pushReplacement(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //           builder: (context) => InstructorCourses(
+                        //                 Email: instructor_email.text,
+                        //                 Name: 'The name',
+                        //               )));
+                        // } else {
+                        //   Fluttertoast.showToast(
+                        //       msg: "Email or Password are incorrect",
+                        //       toastLength: Toast.LENGTH_SHORT,
+                        //       gravity: ToastGravity.BOTTOM,
+                        //       timeInSecForIosWeb: 1,
+                        //       backgroundColor: Colors.blue,
+                        //       textColor: Colors.white,
+                        //       fontSize: 16.0);
+                        // }
                         return;
                       },
                       color: Colors.lightBlue[900],

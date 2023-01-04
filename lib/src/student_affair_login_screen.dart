@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:yarab/components/crud.dart';
+import 'package:yarab/constant/linkapi.dart';
 import 'package:yarab/student_affair/add_affair.dart';
 
 class student_affair_login_screen extends StatefulWidget {
@@ -11,24 +13,84 @@ class student_affair_login_screen extends StatefulWidget {
 }
 
 class _student_affair_login_screenState
-    extends State<student_affair_login_screen> {
+    extends State<student_affair_login_screen> with Crud {
   var student_affair_email = new TextEditingController();
 
   var student_affair_password = new TextEditingController();
 
   bool _isObscure = true;
 
-  setPref(String email, String name) async {
+  setPref(String email, String name, String Id) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setBool('b1', true);
     preferences.setBool('b0', true);
     preferences.setString('Email', email);
     preferences.setString('Name', name);
+    preferences.setString('Id', Id);
   }
 
   @override
   void initState() {
     _isObscure = true;
+  }
+
+  login() async {
+    if (student_affair_email.text.isEmpty) {
+      Fluttertoast.showToast(
+          msg: "please enter an email address",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.blue,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return;
+    }
+    if (student_affair_password.text.toString().length < 8 ||
+        student_affair_password.text.toString().length > 30) {
+      Fluttertoast.showToast(
+          msg: "please enter a password of range 8-30",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.blue,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return;
+    }
+
+    var response = await postRequest(linklogin_studentaffair, {
+      "studAff_email": student_affair_email.text,
+      "studAff_password": student_affair_password.text
+    });
+
+    if (response['status'] == "success") {
+      setPref(
+          student_affair_email.text,
+          response['data']['studAff_firstName'] +
+              " " +
+              response['data']['studAff_firstName'],
+          response['data']['studAff_id']);
+      Navigator.pop(context);
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => add_affair(
+                  Email: student_affair_email.text,
+                  Name: response['data']['studAff_firstName'] +
+                      " " +
+                      response['data']['studAff_firstName'])));
+    } else {
+      Fluttertoast.showToast(
+          msg: "Email or Password are incorrect",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.blue,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
+    return;
   }
 
   @override
@@ -160,59 +222,60 @@ class _student_affair_login_screenState
                   ),
                   Expanded(
                     child: MaterialButton(
-                      onPressed: () {
-                        if (student_affair_email.text.isEmpty) {
-                          Fluttertoast.showToast(
-                              msg: "please enter an email address",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.BOTTOM,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.blue,
-                              textColor: Colors.white,
-                              fontSize: 16.0);
-                          return;
-                        }
-                        if (student_affair_password.text.toString().length <
-                                8 ||
-                            student_affair_password.text.toString().length >
-                                30) {
-                          Fluttertoast.showToast(
-                              msg: "please enter a password of range 8-30",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.BOTTOM,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.blue,
-                              textColor: Colors.white,
-                              fontSize: 16.0);
-                        }
-                        print(student_affair_email.text);
-                        print(student_affair_password.text);
-                        if ((student_affair_email.text ==
-                                    'ahmedsamy@mail.com' &&
-                                student_affair_password.text == 'ahmed samy') ||
-                            (student_affair_email.text ==
-                                    'nancyayman@mail.com' &&
-                                student_affair_password.text ==
-                                    'nancy ayman')) {
-                          //here must get the name from database and put as second argument instead of 'The name'
-                          setPref(student_affair_email.text, 'The name');
-                          Navigator.pop(context);
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => add_affair(
-                                      Email: student_affair_email.text,
-                                      Name: 'The name')));
-                        } else {
-                          Fluttertoast.showToast(
-                              msg: "Email or Password are incorrect",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.BOTTOM,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.blue,
-                              textColor: Colors.white,
-                              fontSize: 16.0);
-                        }
+                      onPressed: () async {
+                        await login();
+                        // if (student_affair_email.text.isEmpty) {
+                        //   Fluttertoast.showToast(
+                        //       msg: "please enter an email address",
+                        //       toastLength: Toast.LENGTH_SHORT,
+                        //       gravity: ToastGravity.BOTTOM,
+                        //       timeInSecForIosWeb: 1,
+                        //       backgroundColor: Colors.blue,
+                        //       textColor: Colors.white,
+                        //       fontSize: 16.0);
+                        //   return;
+                        // }
+                        // if (student_affair_password.text.toString().length <
+                        //         8 ||
+                        //     student_affair_password.text.toString().length >
+                        //         30) {
+                        //   Fluttertoast.showToast(
+                        //       msg: "please enter a password of range 8-30",
+                        //       toastLength: Toast.LENGTH_SHORT,
+                        //       gravity: ToastGravity.BOTTOM,
+                        //       timeInSecForIosWeb: 1,
+                        //       backgroundColor: Colors.blue,
+                        //       textColor: Colors.white,
+                        //       fontSize: 16.0);
+                        // }
+                        // print(student_affair_email.text);
+                        // print(student_affair_password.text);
+                        // if ((student_affair_email.text ==
+                        //             'ahmedsamy@mail.com' &&
+                        //         student_affair_password.text == 'ahmed samy') ||
+                        //     (student_affair_email.text ==
+                        //             'nancyayman@mail.com' &&
+                        //         student_affair_password.text ==
+                        //             'nancy ayman')) {
+                        //here must get the name from database and put as second argument instead of 'The name'
+                        //   setPref(student_affair_email.text, 'The name');
+                        //   Navigator.pop(context);
+                        //   Navigator.pushReplacement(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //           builder: (context) => add_affair(
+                        //               Email: student_affair_email.text,
+                        //               Name: 'The name')));
+                        // } else {
+                        //   Fluttertoast.showToast(
+                        //       msg: "Email or Password are incorrect",
+                        //       toastLength: Toast.LENGTH_SHORT,
+                        //       gravity: ToastGravity.BOTTOM,
+                        //       timeInSecForIosWeb: 1,
+                        //       backgroundColor: Colors.blue,
+                        //       textColor: Colors.white,
+                        //       fontSize: 16.0);
+                        // }
                         return;
                       },
                       color: Colors.lightBlue[900],

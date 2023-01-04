@@ -1,15 +1,63 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:yarab/components/crud.dart';
+import 'package:yarab/constant/linkapi.dart';
 
 import '../main.dart';
 
 class view_affair extends StatefulWidget {
-  const view_affair({super.key});
-
+  //const view_affair({super.key});
+  view_affair({required this.Email});
+  String Email = '';
   @override
-  State<view_affair> createState() => _view_affairState();
+  State<view_affair> createState() => _view_affairState(Email: Email);
 }
 
-class _view_affairState extends State<view_affair> {
+class _view_affairState extends State<view_affair> with Crud {
+  _view_affairState({required this.Email}) {
+    Em = Email;
+  }
+  String Email = '';
+  static String Em = '';
+  static String id = '';
+  static String course_name = '';
+
+  static viewatte() async {
+    var response = await Crud.postRequest123(linkviewattendance, {});
+    return response;
+  }
+
+  static viewfeed() async {
+    var response = await Crud.postRequest123(linkviewfeedback, {});
+    return response;
+  }
+
+  static viewreq() async {
+    var response = await Crud.postRequest123(linkveiwreq, {});
+    return response;
+  }
+
+  static check() async {
+    var response = await Crud.postRequest123(
+        linkacceptcourse, {"std_id": '$id', "course_name": '$course_name'});
+    return response;
+  }
+
+  static accept() async {
+    var response = await Crud.postRequest123(linkaccept, {
+      "studAff_email": '$Em',
+      "std_id": '$id',
+      "course_name": '$course_name'
+    });
+    return response;
+  }
+
+  static reject() async {
+    var response = await Crud.postRequest123(
+        linkreject, {"std_id": '$id', "course_name": '$course_name'});
+    return response;
+  }
+
   int _selectedIndex = 0;
   static List<Pair<DateTime, String>> feedbackList = [
     Pair(DateTime(2022, 12, 16, 5),
@@ -25,17 +73,7 @@ class _view_affairState extends State<view_affair> {
     Pair(DateTime(2021, 5, 5, 23),
         'On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains.')
   ];
-  static List<Pair<int, String>> approveList = [
-    Pair(1, 'CMPN2020'),
-    Pair(2, 'CMPN4613'),
-    Pair(3, 'ELCN1213'),
-    Pair(4, 'ELC1574'),
-    Pair(5, 'CMP2030'),
-    Pair(6, 'GEN1615'),
-    Pair(7, 'MTH2412'),
-    Pair(8, 'MTHN1231'),
-    Pair(9, 'CMP9876')
-  ];
+  static var approveList = [];
   static var absenceList = [
     [1, 'Ahmed Samy', 3, 'Algorthims'],
     [2, 'Omar Mohamed', 2, 'Probability'],
@@ -53,278 +91,368 @@ class _view_affairState extends State<view_affair> {
     [14, 'Amr Karem', 1, 'Logic Design I'],
     [15, 'Sayed Ahmed', 3, 'Logic Design I'],
   ];
-  static final List<Widget> _widgetOptions = <Widget>[
+  late List<Widget> _widgetOptions = <Widget>[
     Container(
-      child: ListView.builder(
-        itemBuilder: (context, position) {
-          return Card(
-            margin: EdgeInsets.all(15),
-            elevation: 15,
-            color: Colors.white60,
-            child: Row(
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 15),
-                      child: Row(
+      child: FutureBuilder(
+          future: viewatte(),
+          builder: (BuildContext context, AsyncSnapshot snapshot1) {
+            return ListView.builder(
+              itemCount: snapshot1.hasData ? snapshot1.data['data'].length : 0,
+              shrinkWrap: true,
+              itemBuilder: (context, position) {
+                return Card(
+                  margin: EdgeInsets.all(15),
+                  elevation: 15,
+                  color: Colors.white60,
+                  child: Row(
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'ID:- ',
-                            style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700),
+                          SizedBox(
+                            height: 12,
                           ),
-                          Text(
-                            '${absenceList[position][0]}',
-                            style: TextStyle(
-                                color: Colors.grey[700],
-                                fontSize: 18,
-                                fontWeight: FontWeight.w300),
+                          Padding(
+                            padding: EdgeInsets.only(left: 15),
+                            child: Row(
+                              children: [
+                                Text(
+                                  'ID:- ',
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                Text(
+                                  "${snapshot1.data['data'][position]['stud_id']}",
+                                  style: TextStyle(
+                                      color: Colors.grey[700],
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w300),
+                                ),
+                              ],
+                            ),
                           ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 15),
+                            child: Row(
+                              children: [
+                                const Text(
+                                  'Name:- ',
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                Text(
+                                  "${snapshot1.data['data'][position]['std_firstName']}" +
+                                      " " +
+                                      "${snapshot1.data['data'][position]['std_secName']}",
+                                  style: const TextStyle(
+                                      color: Colors.black45,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 15),
+                            child: Row(
+                              children: [
+                                const Text(
+                                  'Course:- ',
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                Text(
+                                  "${snapshot1.data['data'][position]['course_name']}",
+                                  style: const TextStyle(
+                                      color: Colors.black45,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          )
                         ],
                       ),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 15),
-                      child: Row(
-                        children: [
-                          const Text(
-                            'Name:- ',
-                            style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700),
-                          ),
-                          Text(
-                            '${absenceList[position][1]}',
-                            style: const TextStyle(
-                                color: Colors.black45,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w400),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 15),
-                      child: Row(
-                        children: [
-                          const Text(
-                            'Course:- ',
-                            style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700),
-                          ),
-                          Text(
-                            '${absenceList[position][3]}',
-                            style: const TextStyle(
-                                color: Colors.black45,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w400),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    )
-                  ],
-                ),
-                new Spacer(),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Absence',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      '${absenceList[position][2]}',
-                      style: TextStyle(fontSize: 20, color: Colors.blueAccent),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  width: 15,
-                )
-              ],
-            ),
-          );
-        },
-        itemCount: absenceList.length,
-      ),
-    ),
-    Container(
-      child: ListView.builder(
-        itemBuilder: (context, position) {
-          return Card(
-            margin: EdgeInsets.all(13),
-            elevation: 15,
-            color: Colors.white60,
-            child: Row(
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 15),
-                      child: Row(
+                      new Spacer(),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Text(
-                            'ID:- ',
-                            maxLines: 1,
-                            overflow: TextOverflow.clip,
+                            'Absence',
                             style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700),
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
                           ),
                           Text(
-                            '${approveList[position].a}',
+                            "${snapshot1.data['data'][position]['enroll_attendanceNo']}",
                             style: TextStyle(
-                                color: Colors.grey[700],
-                                fontSize: 18,
-                                fontWeight: FontWeight.w300),
-                          ),
+                                fontSize: 20, color: Colors.blueAccent),
+                          )
                         ],
                       ),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 15),
-                      child: Row(
-                        children: [
-                          const Text(
-                            'Course:- ',
-                            style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700),
-                          ),
-                          Text(
-                            approveList[position].b,
-                            style: const TextStyle(
-                                color: Colors.black38,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w400),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                new Spacer(),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    MaterialButton(
-                      onPressed: () {
-                        print('Accept $position pressed');
-                      },
-                      color: Colors.green[800],
-                      elevation: 7,
-                      child: const Text(
-                        'Accept',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                    MaterialButton(
-                      onPressed: () {},
-                      color: Colors.red[900],
-                      elevation: 7,
-                      child: const Text(
-                        'Decline',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  width: 15,
-                )
-              ],
-            ),
-          );
-        },
-        itemCount: approveList.length,
-      ),
-    ),
-    ListView.builder(
-      itemBuilder: (context, position) {
-        return Card(
-          margin: const EdgeInsets.all(15),
-          color: Colors.white60,
-          elevation: 20,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 15, top: 15, left: 15),
-                child: SizedBox(
-                  width: 350,
-                  child: Text(
-                    feedbackList[position].b,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: Colors.deepPurple[900],
-                        fontSize: 19),
+                      SizedBox(
+                        width: 15,
+                      )
+                    ],
                   ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 15, top: 15, left: 15),
-                child: Text(
-                  dating(feedbackList[position].a),
-                  style: const TextStyle(
-                      color: Colors.blueAccent,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500),
-                ),
-              ),
-              const SizedBox(height: 15),
-            ],
-          ),
-        );
-      },
-      itemCount: feedbackList.length,
+                );
+              },
+            );
+          }),
     ),
+    Container(
+      child: FutureBuilder(
+          future: viewreq(),
+          builder: (BuildContext context, AsyncSnapshot snapshot8) {
+            if (snapshot8.data != null) approveList = snapshot8.data['data'];
+            return ListView.builder(
+              itemCount: 50,
+              itemBuilder: (context, position) {
+                try {
+                  return GestureDetector(
+                    child: Card(
+                      margin: EdgeInsets.all(13),
+                      elevation: 15,
+                      color: Colors.white60,
+                      child: Row(
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(left: 15),
+                                child: Row(
+                                  children: [
+                                    const Text(
+                                      'ID:- ',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.clip,
+                                      style: TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                    Text(
+                                      "${approveList[position]['std_id']}",
+                                      style: TextStyle(
+                                          color: Colors.grey[700],
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 15),
+                                child: Row(
+                                  children: [
+                                    const Text(
+                                      'Course:- ',
+                                      style: TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                    Text(
+                                      "${approveList[position]['(SELECT `course_name` FROM `course` WHERE c = `course_id`)']}",
+                                      style: const TextStyle(
+                                          color: Colors.black38,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                          new Spacer(),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              MaterialButton(
+                                onPressed: () async {
+                                  id = approveList[position]['std_id'];
+                                  course_name = approveList[position][
+                                      '(SELECT `course_name` FROM `course` WHERE c = `course_id`)'];
+                                  var res = await accept();
+                                  if (res == null) {
+                                    Fluttertoast.showToast(
+                                        msg: "error in adding",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.BOTTOM,
+                                        timeInSecForIosWeb: 1,
+                                        backgroundColor: Colors.blue,
+                                        textColor: Colors.white,
+                                        fontSize: 16.0);
+                                  } else {
+                                    setState(() async {
+                                      approveList.removeAt(position);
+                                    });
+                                    print('Accept $position pressed');
+                                  }
+                                },
+                                color: Colors.green[800],
+                                elevation: 7,
+                                child: const Text(
+                                  'Accept',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              MaterialButton(
+                                onPressed: () async {
+                                  id = approveList[position]['std_id'];
+                                  course_name = approveList[position][
+                                      '(SELECT `course_name` FROM `course` WHERE c = `course_id`)'];
+                                  var res = await reject();
+                                  if (res == null) {
+                                    Fluttertoast.showToast(
+                                        msg: "error in adding",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.BOTTOM,
+                                        timeInSecForIosWeb: 1,
+                                        backgroundColor: Colors.blue,
+                                        textColor: Colors.white,
+                                        fontSize: 16.0);
+                                  } else {
+                                    setState(() async {
+                                      var m = await viewreq();
+                                      approveList = m['data'];
+                                    });
+                                  }
+                                },
+                                color: Colors.red[900],
+                                elevation: 7,
+                                child: const Text(
+                                  'Decline',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            width: 15,
+                          )
+                        ],
+                      ),
+                    ),
+                    onTap: () async {
+                      id = approveList[position]['std_id'];
+                      course_name = approveList[position][
+                          '(SELECT `course_name` FROM `course` WHERE c = `course_id`)'];
+                      var res = await check();
+                      if (res["status"] == "success") {
+                        Fluttertoast.showToast(
+                            msg: "Accepted",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.blue,
+                            textColor: Colors.white,
+                            fontSize: 16.0);
+                      } else {
+                        Fluttertoast.showToast(
+                            msg: "rejected",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.blue,
+                            textColor: Colors.white,
+                            fontSize: 16.0);
+                      }
+                    },
+                  );
+                } catch (e) {}
+                return Container(
+                  color: Colors.white,
+                );
+              },
+            );
+          }),
+    ),
+    FutureBuilder(
+        future: viewfeed(),
+        builder: (BuildContext context, AsyncSnapshot snapshot2) {
+          return ListView.builder(
+            itemCount: snapshot2.hasData ? snapshot2.data['data'].length : 0,
+            shrinkWrap: true,
+            itemBuilder: (context, position) {
+              return Card(
+                margin: const EdgeInsets.all(15),
+                color: Colors.white60,
+                elevation: 20,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(right: 15, top: 15, left: 15),
+                      child: SizedBox(
+                        width: 350,
+                        child: Text(
+                          "${snapshot2.data['data'][position]['fed_content']}",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Colors.deepPurple[900],
+                              fontSize: 19),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(right: 15, top: 15, left: 15),
+                      child: Text(
+                        "${snapshot2.data['data'][position]['fed_date']}",
+                        style: const TextStyle(
+                            color: Colors.blueAccent,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                  ],
+                ),
+              );
+            },
+          );
+        }),
   ];
 
   void _onItemTapped(int index) {

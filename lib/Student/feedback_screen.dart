@@ -1,8 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:yarab/components/crud.dart';
 
-class feedback_screen extends StatelessWidget {
+import '../constant/linkapi.dart';
+
+class feedback_screen extends StatelessWidget with Crud {
   TextEditingController feedback = new TextEditingController();
 
+  String Id = '';
+  feedback_screen(this.Id, {super.key});
+
+  addfed() async {
+    var response =
+        postRequest(linkaddfed, {"std_id": Id, "fed_content": feedback.text});
+    return response;
+  }
   // getPref() async {
   //   SharedPreferences preferences = await SharedPreferences.getInstance();
   // }
@@ -76,7 +88,31 @@ class feedback_screen extends StatelessWidget {
                 Container(
                   width: 300,
                   child: MaterialButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      if (feedback.text == '') {
+                        Fluttertoast.showToast(
+                            msg: "Please enter feedback",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.blue,
+                            textColor: Colors.white,
+                            fontSize: 16.0);
+                      } else {
+                        var res = await addfed();
+                        if (res == null) {
+                          Fluttertoast.showToast(
+                              msg: "error in adding",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.blue,
+                              textColor: Colors.white,
+                              fontSize: 16.0);
+                        }
+                        feedback.text = '';
+                      }
+                    },
                     elevation: 15,
                     color: Colors.blue[900],
                     height: 50,

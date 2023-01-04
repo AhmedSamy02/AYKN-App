@@ -3,30 +3,93 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yarab/Student/enrolled_courses.dart';
+import 'package:yarab/components/crud.dart';
+import 'package:yarab/constant/linkapi.dart';
 
 class student_login_screen extends StatefulWidget {
   @override
   State<student_login_screen> createState() => _student_login_screenState();
 }
 
-class _student_login_screenState extends State<student_login_screen> {
+class _student_login_screenState extends State<student_login_screen> with Crud {
   var student_email = new TextEditingController();
 
   var student_password = new TextEditingController();
   bool _isObscure = true;
 
-  String Name = '';
-  setPref(String email, String name) async {
+  @override
+  void initState() {
+    _isObscure = true;
+  }
+
+  login_std() async {
+    if (student_email.text.isEmpty) {
+      Fluttertoast.showToast(
+          msg: "please enter an email address",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.blue,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return;
+    }
+
+    if (student_password.text.length < 8 || student_password.text.length > 30) {
+      Fluttertoast.showToast(
+          msg: "please enter a password of range 8-30",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.blue,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return;
+    }
+
+    var response = await postRequest(linkloginstud, {
+      "std_password": student_password.text,
+      "std_email": student_email.text,
+    });
+
+    if (response['status'] == "success") {
+      setPref(
+          student_email.text,
+          response['data']['std_firstName'] +
+              " " +
+              response['data']['std_secName'],
+          response['data']['stud_id']);
+      Navigator.pop(context);
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Nbar(
+                    Email: student_email.text,
+                    Name: response['data']['std_firstName'] +
+                        " " +
+                        response['data']['std_secName'],
+                       Id: response['data']['stud_id'],
+                  )));
+    } else {
+      Fluttertoast.showToast(
+          msg: "Email or Password are incorrect",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.blue,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
+  }
+
+  //String Name = '';
+  setPref(String email, String name, String Id) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setBool('b1', true);
     preferences.setBool('b0', false);
     preferences.setString('Email', email);
-    preferences.setString('Name', Name);
-  }
-
-  @override
-  void initState() {
-    _isObscure = true;
+    preferences.setString('Name', name);
+    preferences.setString('Id', Id);
   }
 
   @override
@@ -155,53 +218,8 @@ class _student_login_screenState extends State<student_login_screen> {
                 width: 300,
                 height: 50,
                 child: MaterialButton(
-                  onPressed: () {
-                    if (student_email.text.isEmpty) {
-                      Fluttertoast.showToast(
-                          msg: "please enter an email address",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.blue,
-                          textColor: Colors.white,
-                          fontSize: 16.0);
-                      return;
-                    }
-                    if (student_password.text.length < 8 ||
-                        student_password.text.length > 30) {
-                      Fluttertoast.showToast(
-                          msg: "please enter a password of range 8-30",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.blue,
-                          textColor: Colors.white,
-                          fontSize: 16.0);
-                    }
-                    if ((student_email.text == 'ahmedsamy@mail.com' &&
-                            student_password.text == 'ahmed samy') ||
-                        (student_email.text == 'nancyayman@mail.com' &&
-                            student_password.text == 'nancy ayman')) {
-                      Name = 'The name';
-                      setPref(student_email.text, Name);
-                      Navigator.pop(context);
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Nbar(
-                                    Name: Name,
-                                  )));
-                    } else {
-                      Fluttertoast.showToast(
-                          msg: "Email or Password are incorrect",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.blue,
-                          textColor: Colors.white,
-                          fontSize: 16.0);
-                      return;
-                    }
+                  onPressed: () async {
+                    await login_std();
                   },
                   color: Colors.lightBlue[900],
                   shape: RoundedRectangleBorder(
