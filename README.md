@@ -1,16 +1,12 @@
-# yarab
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# AYKN University Application <img src="https://user-images.githubusercontent.com/88517271/227620627-62b5ccdb-4d46-4a36-9f24-0dae28a659ed.png" width="50"/>
+This is our project for Database course in 2nd year of collage. 
+## Techonligies used
+- Flutter
+- REST API with PHP
+## Description
+This application supports 3 different users : Students, Instructors, and Student affairs.
+## Contributors
+- [@AhmedSamy02](https://github.com/AhmedSamy02)
+- [@kaokab33](https://github.com/kaokab33)
+- [@nancyalgazzar](https://github.com/nancyalgazzar)
+- [@YaraHisham61](https://github.com/YaraHisham61)
